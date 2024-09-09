@@ -11,10 +11,14 @@ import java.io.IOException;
 
 @Slf4j
 public class Main {
-    public static void main(String[] args) {
-        deserialize("src/main/resources/city-error.json");
+    private static final String ERROR_JSON_PATH = "src/main/resources/city-error.json";
+    private static final String JSON_PATH = "src/main/resources/city.json";
+    private static final String XML_PATH = "src/main/resources/city.xml";
 
-        City city = deserialize("src/main/resources/city.json");
+    public static void main(String[] args) {
+        deserialize(ERROR_JSON_PATH);
+
+        City city = deserialize(JSON_PATH);
         toXml(city);
     }
 
@@ -25,7 +29,7 @@ public class Main {
             city = objectMapper.readValue(new File(path), City.class);
             log.info("File's parsed to object {}", city.toString());
         } catch (JsonParseException e) {
-            log.error("Error parsing file {}. {}", path, e.getMessage());
+            log.warn("Error parsing file {}. {}", path, e.getMessage());
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -34,13 +38,15 @@ public class Main {
 
     public static void toXml(City city) {
         if (city == null) {
-            log.error("Object City is null");
+            log.warn("Object City : null");
+        } else {
+            log.debug("Object City : {}", city);
         }
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         try {
-            xmlMapper.writeValue(new File("src/main/resources/city.xml"), city);
+            xmlMapper.writeValue(new File(XML_PATH), city);
             log.info("XML file's created");
         } catch (IOException e) {
             log.error("Error writing xml: {}", e.getMessage());
