@@ -1,55 +1,44 @@
 package org.example;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.stream.IntStream;
 
-import java.io.File;
-import java.io.IOException;
-
-@Slf4j
 public class Main {
-    private static final String ERROR_JSON_PATH = "src/main/resources/city-error.json";
-    private static final String JSON_PATH = "src/main/resources/city.json";
-    private static final String XML_PATH = "src/main/resources/city.xml";
 
     public static void main(String[] args) {
-        deserialize(ERROR_JSON_PATH);
+        // Часть 1
+        CustomLinkedList<Integer> a = new CustomLinkedList<>();
+        a.add(null);
+        a.add(1);
+        a.addAll(List.of(2, 3, 4));
+        System.out.println("После add() и addAll(): " + a);
 
-        City city = deserialize(JSON_PATH);
-        toXml(city);
-    }
+        a.remove(null);
+        a.remove(1);
+        a.remove(Integer.valueOf(1));
+        System.out.println("После remove(): " + a);
 
-    public static City deserialize(String path) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        City city = null;
-        try {
-            city = objectMapper.readValue(new File(path), City.class);
-            log.info("File's parsed to object {}", city.toString());
-        } catch (JsonParseException e) {
-            log.warn("Error parsing file {}. {}", path, e.getMessage());
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-        return city;
-    }
+        System.out.println("contains(3): " + a.contains(3));
+        System.out.println("size(): " + a.size());
 
-    public static void toXml(City city) {
-        if (city == null) {
-            log.warn("Object City : null");
-        } else {
-            log.debug("Object City : {}", city);
-        }
-        XmlMapper xmlMapper = new XmlMapper();
-        xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        System.out.println("get(0): " + a.get(0));
+        System.out.println("get(2): " + a.get(1));
 
-        try {
-            xmlMapper.writeValue(new File(XML_PATH), city);
-            log.info("XML file's created");
-        } catch (IOException e) {
-            log.error("Error writing xml: {}", e.getMessage());
-        }
+
+        // Часть 2
+        CustomLinkedList<Integer> squares1To10 = IntStream.range(1, 11)
+                .map(x -> x * x)
+                .boxed()
+                .reduce(new CustomLinkedList<>(),
+                        (linkedList, element) -> {
+                            linkedList.add(element);
+                            return linkedList;
+                        },
+                        (ll, ll2) -> {
+                            ll.addAll(ll2);
+                            return ll;
+                        }
+                );
+        System.out.println(squares1To10);
     }
 }
