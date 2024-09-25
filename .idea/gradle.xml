@@ -6,11 +6,22 @@
       <GradleProjectSettings>
         <option name="distributionType" value="LOCAL" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="$PROJECT_DIR$/../../../../Programming/IDEs/Java/gradle-8.10" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../../IDEs/Java/gradle-8.10" />
         <option name="gradleJvm" value="#JAVA_HOME" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/execution-time-logger-starter" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/execution-time-logger-starter" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../../IDEs/Java/gradle-8.10" />
+        <option name="gradleJvm" value="#JAVA_HOME" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/execution-time-logger-starter" />
           </set>
         </option>
       </GradleProjectSettings>
