@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class Location {
-    private String slug;
-    private String name;
+    private final String slug;
+    private final String name;
 }

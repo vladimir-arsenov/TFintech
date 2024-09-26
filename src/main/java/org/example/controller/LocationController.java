@@ -4,8 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.example.executiontimeloggerstarter.LogExecutionTime;
 import org.example.model.Location;
 import org.example.service.LocationService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -18,30 +24,27 @@ public class LocationController {
     private final LocationService locationService;
 
     @GetMapping
-    public ResponseEntity<List<Location>> getLocations() {
-        return ResponseEntity.ok(locationService.getAllLocations());
+    public List<Location> getLocations() {
+        return locationService.getAllLocations();
     }
 
     @GetMapping("/{slug}")
-    public ResponseEntity<Location> getLocation(@PathVariable String slug) {
-        return ResponseEntity.ok(locationService.getLocation(slug));
+    public Location getLocation(@PathVariable String slug) {
+        return locationService.getLocation(slug);
     }
 
     @PostMapping
-    public ResponseEntity<?> addLocation(@RequestBody Location location) {
+    public void addLocation(@RequestBody Location location) {
         locationService.addLocation(location);
-        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{slug}")
-    public ResponseEntity<?> updateLocation(@RequestBody Location location) {
+    public void updateLocation(@RequestBody Location location) {
         locationService.updateLocation(location);
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{slug}")
-    public ResponseEntity<?> deleteLocation(@PathVariable String slug) {
+    public void deleteLocation(@PathVariable String slug) {
         locationService.deleteLocation(slug);
-        return ResponseEntity.noContent().build();
     }
 }

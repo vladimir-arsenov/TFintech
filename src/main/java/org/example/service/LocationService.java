@@ -1,18 +1,41 @@
 package org.example.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.model.Location;
+import org.example.repository.ConcurrentHashMapRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
-public interface LocationService {
+@RequiredArgsConstructor
+@Service
+public class LocationService {
 
-    Location getLocation(String slug);
+    private final ConcurrentHashMapRepository<String, Location> repository;
 
-    void addLocation(Location location);
+    public Location getLocation(String slug) {
+        return Optional.ofNullable(repository.get(slug))
+                .orElseThrow(() -> new NoSuchElementException("Location with id %s not found".formatted(slug)));
+    }
 
-    List<Location> getAllLocations() ;
+    public void addLocation(Location location) {
+        repository.add(location);
+    }
 
-    void updateLocation(Location newLocation) ;
+    public List<Location> getAllLocations() {
+        return repository.getAll();
+    }
 
-    void deleteLocation(String slug) ;
+    public void updateLocation(Location newLocation) {
+        Optional.ofNullable(repository.update(newLocation))
+                .orElseThrow(() -> new NoSuchElementException("Location with id %s not found".formatted(newLocation.getSlug())));
+    }
+
+    public void deleteLocation(String slug) {
+        Optional.ofNullable(repository.delete(slug))
+                .orElseThrow(() -> new NoSuchElementException("Location with id %s not found".formatted(slug)));
+
+    }
 }

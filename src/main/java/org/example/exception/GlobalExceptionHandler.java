@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseBody
-    public ResponseEntity<?> handleIllegalArgumentException(NoSuchElementException ex) {
+    public ResponseEntity<String> handleIllegalArgumentException(NoSuchElementException ex) {
         return ResponseEntity.badRequest().build();
     }
 }

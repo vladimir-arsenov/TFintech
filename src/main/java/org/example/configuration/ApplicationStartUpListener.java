@@ -14,17 +14,16 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 @Slf4j
-@LogExecutionTime
 @RequiredArgsConstructor
 @Component
-public class RunAfterStartup {
+public class ApplicationStartUpListener {
     private final ConcurrentHashMapRepository<Integer, Category> categoryRepository;
     private final ConcurrentHashMapRepository<String, Location> locationsRepository;
     private final ApiClient apiClient;
 
     @LogExecutionTime
     @EventListener(ApplicationReadyEvent.class)
-    public void runAfterStartup() {
+    public void initRepositories() {
         log.info("Initializing category repository...");
 
         Arrays.stream(apiClient.getCategories())
