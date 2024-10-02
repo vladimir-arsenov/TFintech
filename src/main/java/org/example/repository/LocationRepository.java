@@ -32,6 +32,9 @@ public class LocationRepository implements ConcurrentHashMapRepository<String, L
 
     @Override
     public Location update(Location e) {
+        if (!storage.containsKey(e.getSlug()))
+            return null;
+
         return storage.put(e.getSlug(), e);
     }
 
