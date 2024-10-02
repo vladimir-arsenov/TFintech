@@ -33,11 +33,15 @@ public class CategoryRepository implements ConcurrentHashMapRepository<Integer, 
 
     @Override
     public Category update(Category e) {
+        if (!storage.containsKey(e.getId()))
+            return null;
+
         return storage.put(e.getId(), e);
     }
 
     @Override
     public Category delete(Integer id) {
+        System.out.println(id);
         return storage.remove(id);
     }
 }
