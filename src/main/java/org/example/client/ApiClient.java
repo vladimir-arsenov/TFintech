@@ -42,7 +42,6 @@ public class ApiClient {
         log.info("Calling API to acquire locations...");
         try {
 
-            System.out.println(restTemplate.getForEntity(locationsUrl, Location[].class));
             ResponseEntity<Location[]> response = restTemplate.getForEntity(locationsUrl, Location[].class);
             log.info("Locations acquired");
 
