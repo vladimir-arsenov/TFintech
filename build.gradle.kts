@@ -41,12 +41,29 @@ dependencies {
 
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
 tasks.test {
+    useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport)
 }
+
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
+
+    classDirectories.setFrom(
+        fileTree( "${layout.buildDirectory.get().asFile}/classes/java/main") {
+            exclude("**/model/**")
+        }
+    )
+}
+
+tasks.jacocoTestCoverageVerification {
+    dependsOn("test")
+
+    violationRules {
+        rule {
+            limit {
+                minimum = "0.7".toBigDecimal()
+            }
+        }
+    }
 }
