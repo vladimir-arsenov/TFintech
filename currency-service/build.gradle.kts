@@ -35,6 +35,7 @@ dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.0")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+    testImplementation("org.wiremock:wiremock-standalone:3.0.3")
 }
 
 tasks.withType<Test> {

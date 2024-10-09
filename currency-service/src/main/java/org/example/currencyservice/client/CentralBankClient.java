@@ -41,9 +41,10 @@ public class CentralBankClient {
 
         log.info("Acquiring currency rates from {}", currencyRatesUrl);
 
-        Map<String, CurrencyRate> map =  xmlMapper.readValue(xml, new TypeReference<List<CurrencyRate>>() {})
+        Map<String, CurrencyRate> map = xmlMapper.readValue(xml, new TypeReference<List<CurrencyRate>>() {})
                 .stream()
                 .collect(Collectors.toMap(CurrencyRate::getCurrency, a -> a));
+        map.remove(null);
         map.put("RUB", new CurrencyRate("RUB", 1.0f));
 
         log.info("Acquired currency rates");
