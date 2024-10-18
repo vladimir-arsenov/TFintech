@@ -1,4 +1,9 @@
 spring.application.name: currency-service
+spring:
+  cache:
+    cache-names: currenciesRates
+    caffeine:
+      spec: expireAfterWrite=1h
 
 api:
   external:

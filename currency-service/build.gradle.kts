@@ -36,6 +36,9 @@ dependencies {
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
     testImplementation("org.wiremock:wiremock-standalone:3.0.3")
+
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+
 }
 
 tasks.withType<Test> {

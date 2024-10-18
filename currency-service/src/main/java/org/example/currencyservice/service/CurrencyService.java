@@ -10,6 +10,8 @@ import org.example.currencyservice.exception.NoSuchCurrencyException;
 import org.example.currencyservice.exception.UnsupportedCurrencyException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Currency;
 import java.util.Map;
 
@@ -42,7 +44,7 @@ public class CurrencyService {
         var to = rates.get(conversionRequest.getToCurrency());
         var amount = conversionRequest.getAmount();
 
-        var result = from.getRate() * amount / to.getRate();
+        BigDecimal result = from.getRate().multiply(amount).divide(to.getRate(), MathContext.DECIMAL32);
 
         return new CurrencyConversionResponse(conversionRequest.getFromCurrency(), conversionRequest.getToCurrency(), result);
     }
