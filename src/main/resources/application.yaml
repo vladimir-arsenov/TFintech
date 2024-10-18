@@ -2,3 +2,5 @@ api:
   url:
     categories: https://kudago.com/public-api/v1.4/place-categories
     locations: https://kudago.com/public-api/v1.4/locations
+    events: https://kudago.com/public-api/v1.4/events/?fields=id,title,price
+    currencies: http://localhost:8091/convert
