@@ -3,6 +3,7 @@ package org.example.service;
 import lombok.RequiredArgsConstructor;
 import org.example.client.ApiClient;
 import org.example.model.Event;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -18,26 +19,28 @@ public class EventService {
 
     private final ApiClient apiClient;
 
-    public List<Event> getEvents(Integer budget, String currency, LocalDate dateFrom, LocalDate dateTo) {
-        Mono<Event[]> eventsMono = Mono.fromSupplier(() -> apiClient.getEvents(dateFrom, dateTo));
-        Mono<Float> converetedBudgetMono = Mono.fromSupplier(() -> apiClient.convertMoney(budget, currency));
-
-        return Mono.zip(eventsMono, converetedBudgetMono)
-                .map(zip -> Arrays.stream(zip.getT1())
-                        .filter(event -> event.getPrice()<= zip.getT2())
-                        .toList())
-                .block();
+    public Mono<List<Event>> getEvents(Integer budget, String currency, LocalDate dateFrom, LocalDate dateTo) {
+        return Mono.zip(
+                Mono.fromSupplier(() -> apiClient.getEvents(dateFrom, dateTo)),
+                Mono.fromSupplier(() -> apiClient.convertMoney(budget, currency)),
+                (events, convertedBudget) -> Arrays.stream(events)
+                        .filter(event -> event.getPrice() <= convertedBudget)
+                        .toList()
+        );
     }
 
-    public List<Event> getEventsCompletableFuture(Integer budget, String currency, LocalDate dateFrom, LocalDate dateTo) {
-        List<Event> eventsList = new ArrayList<>();
-        CompletableFuture.supplyAsync(() -> apiClient.getEvents(dateFrom, dateTo))
+    @Async
+    public CompletableFuture<List<Event>> getEventsCompletableFuture(Integer budget, String currency, LocalDate dateFrom, LocalDate dateTo) {
+        List<Event> result = new ArrayList<>();
+
+        CompletableFuture<Void> allDone = CompletableFuture.supplyAsync(() -> apiClient.getEvents(dateFrom, dateTo))
                 .thenAcceptBoth(CompletableFuture.supplyAsync(() -> apiClient.convertMoney(budget, currency)),
-                        (Event[] events, Float convertedBudget) -> Arrays.stream(events)
-                                .filter(event -> event.getPrice() <= convertedBudget)
-                                .forEach(eventsList::add)
-                );
-        return eventsList;
+                        (Event[] eventsArray, Float b) -> Arrays.stream(eventsArray)
+                                .filter(event -> event.getPrice() <= b)
+                                .forEach(result::add)
+        );
+
+        return allDone.thenApply(v -> new ArrayList<>(result));
     }
 
 

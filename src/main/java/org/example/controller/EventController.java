@@ -25,6 +25,7 @@ public class EventController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo
     ) {
-        return eventService.getEvents(budget, currency, dateFrom, dateTo);
+//        return eventService.getEventsCompletableFuture(budget, currency, dateFrom, dateTo).join();
+        return eventService.getEvents(budget, currency, dateFrom, dateTo).block();
     }
 }
