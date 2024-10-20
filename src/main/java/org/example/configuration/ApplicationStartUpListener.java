@@ -7,10 +7,12 @@ import org.example.model.Category;
 import org.example.model.Location;
 import org.example.repository.ConcurrentHashMapRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -27,21 +29,27 @@ public class ApplicationStartUpListener {
     private final ApiClient apiClient;
     private final ExecutorService fixedExecutor;
     private final ScheduledExecutorService scheduledExecutor;
+    private final Duration schedulerInterval;
 
-    public ApplicationStartUpListener(ConcurrentHashMapRepository<Integer, Category> categoryRepository, ConcurrentHashMapRepository<String, Location> locationsRepository, ApiClient apiClient,
+    public ApplicationStartUpListener(ConcurrentHashMapRepository<Integer, Category> categoryRepository,
+                                      ConcurrentHashMapRepository<String, Location> locationsRepository,
+                                      ApiClient apiClient,
                                       @Qualifier("fixed-executor") ExecutorService fixedExecutor,
-                                      @Qualifier("scheduled-executor") ScheduledExecutorService scheduledExecutor) {
+                                      @Qualifier("scheduled-executor") ScheduledExecutorService scheduledExecutor,
+                                      @Value("${executors.scheduler.interval}") Duration schedulerInterval
+    ) {
         this.categoryRepository = categoryRepository;
         this.locationsRepository = locationsRepository;
         this.apiClient = apiClient;
         this.fixedExecutor = fixedExecutor;
         this.scheduledExecutor = scheduledExecutor;
+        this.schedulerInterval = schedulerInterval;
     }
 
     @LogExecutionTime
     @EventListener(ApplicationReadyEvent.class)
     public void initRepositories() {
-        scheduledExecutor.scheduleWithFixedDelay(this::initialize, 0, 10, TimeUnit.SECONDS);
+        scheduledExecutor.scheduleWithFixedDelay(this::initialize, 0, schedulerInterval.getSeconds(), TimeUnit.SECONDS);
     }
 
     private void initialize() {
@@ -59,7 +67,6 @@ public class ApplicationStartUpListener {
             log.info("Location repository initialized");
             return null;
         };
-        var s = System.currentTimeMillis();
 
         try {
             var futures = fixedExecutor.invokeAll(List.of(categoryInitTask, locationInitTask));
@@ -69,7 +76,5 @@ public class ApplicationStartUpListener {
         } catch (InterruptedException | ExecutionException e) {
             log.error("Error while initializing repositories", e);
         }
-
-        System.out.println(System.currentTimeMillis() - s);
     }
 }

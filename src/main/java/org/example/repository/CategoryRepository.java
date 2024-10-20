@@ -41,7 +41,6 @@ public class CategoryRepository implements ConcurrentHashMapRepository<Integer, 
 
     @Override
     public Category delete(Integer id) {
-        System.out.println(id);
         return storage.remove(id);
     }
 }

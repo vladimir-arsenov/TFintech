@@ -2,17 +2,22 @@ package org.example.client;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.dto.EventResponse;
 import org.example.model.Category;
 import org.example.model.Event;
 import org.example.model.Location;
-import org.example.model.Reponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -67,31 +72,34 @@ public class ApiClient {
         log.info("Calling API to acquire events...");
         try {
             var url = eventsUrl + (dateFrom == null ? "" : "&actual_since=" + dateFrom) + (dateTo == null ? "" : "&actual_until=" + dateTo);
-            System.out.println(url);
-            ResponseEntity<Reponse> response = restTemplate.getForEntity(url, Reponse.class);
+            ResponseEntity<EventResponse> response = restTemplate.getForEntity(url, EventResponse.class);
             log.info("Events acquired");
 
             return response.getBody().getResults();
         } catch (RestClientException e) {
             log.error("Couldn't fetch events: {}", e.getMessage());
 
-            throw new RuntimeException(e);
+            return new Event[0];
         }
     }
 
-    public Float convertMoney(Integer budget, String currency) {
-//        log.info("Calling API to convert money...");
-//        try {
-//            ResponseEntity<ConvertedMoney> response = restTemplate.postForEntity(currenciesUrl, new ConvertionRequest() ,ConvertedMoney.class);
-//            log.info("Events acquired");
-//
-//            return response.getBody().getAmount();
-//        } catch (RestClientException e) {
-//            log.error("Couldn't fetch events: {}", e.getMessage());
-//
-//            return 0f;
-//        }
+    public BigDecimal convertMoney(BigDecimal budget, String currency) {
+        log.info("Calling API to convert money...");
 
-        return 100000000f;
+        Map<String, Object> request = new HashMap<>();
+        request.put("fromCurrency", currency);
+        request.put("toCurrency", "RUB");
+        request.put("amount", budget);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request);
+
+        try {
+            var converted = String.valueOf(restTemplate.exchange(currenciesUrl, HttpMethod.POST, entity, Map.class)
+                    .getBody().get("convertedAmount"));
+            log.info("Money are converted");
+            return new BigDecimal(converted);
+        } catch (RestClientException e) {
+            log.error("Couldn't convert money: {}", e.getMessage());
+            return new BigDecimal(0);
+        }
     }
 }
