@@ -3,7 +3,7 @@ package org.example.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.executiontimeloggerstarter.LogExecutionTime;
 import org.example.model.Location;
-import org.example.service.LocationService;
+import org.example.service.hashMapService.HashMapLocationService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,30 +21,30 @@ import java.util.List;
 @RequestMapping("api/v1/locations")
 public class LocationController {
 
-    private final LocationService locationService;
+    private final HashMapLocationService hashMapLocationService;
 
     @GetMapping
     public List<Location> getLocations() {
-        return locationService.getAllLocations();
+        return hashMapLocationService.getAllLocations();
     }
 
     @GetMapping("/{slug}")
     public Location getLocation(@PathVariable String slug) {
-        return locationService.getLocation(slug);
+        return hashMapLocationService.getLocation(slug);
     }
 
     @PostMapping
     public void addLocation(@RequestBody Location location) {
-        locationService.addLocation(location);
+        hashMapLocationService.addLocation(location);
     }
 
     @PutMapping("/{slug}")
     public void updateLocation(@RequestBody Location location) {
-        locationService.updateLocation(location);
+        hashMapLocationService.updateLocation(location);
     }
 
     @DeleteMapping("/{slug}")
     public void deleteLocation(@PathVariable String slug) {
-        locationService.deleteLocation(slug);
+        hashMapLocationService.deleteLocation(slug);
     }
 }

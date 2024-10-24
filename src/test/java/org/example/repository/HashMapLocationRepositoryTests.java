@@ -1,27 +1,29 @@
 package org.example.repository;
 
 import org.example.model.Location;
+import org.example.repository.hashMapRepository.HashMapLocationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class LocationRepositoryTests {
+public class HashMapLocationRepositoryTests {
 
-    private LocationRepository repository;
+    private HashMapLocationRepository repository;
 
     @BeforeEach
     void setUp() {
-        repository = new LocationRepository();
+        repository = new HashMapLocationRepository();
     }
 
     @Test
     public void get_validSlug_shouldReturnLocation() {
-        var location = new Location("slug", "");
+        var location = new Location(null, "slug", "", Collections.emptyList());
         repository.add(location);
 
         var result = repository.get(location.getSlug());
@@ -31,7 +33,7 @@ public class LocationRepositoryTests {
 
     @Test
     public void get_invalidSlug_shouldReturnNull() {
-        var location = new Location("slug", "");
+        var location = new Location(null, "slug", "", Collections.emptyList());
         repository.add(location);
 
         var result = repository.get(location.getSlug() + "1");
@@ -46,8 +48,8 @@ public class LocationRepositoryTests {
 
     @Test
     public void getAll_shouldReturnAllLocations() {
-        var locations = List.of(new Location("1", ""),
-                new Location("2", ""), new Location("3", ""));
+        var locations = List.of(new Location(null, "1", "", Collections.emptyList())   ,
+                new Location(null, "2", "", Collections.emptyList()), new Location(null, "3", "", Collections.emptyList()));
         locations.forEach(repository::add);
 
         var result = repository.getAll();
@@ -57,8 +59,8 @@ public class LocationRepositoryTests {
 
     @Test
     public void add_existingLocation_shouldReplaceLocation() {
-        var location = new Location("slug", "");
-        var newLocation = new Location(location.getSlug(), "new");
+        var location = new Location(null, "slug", "", Collections.emptyList());
+        var newLocation = new Location(null, location.getSlug(), "new", Collections.emptyList());
         repository.add(location);
 
         repository.add(newLocation);
@@ -68,7 +70,7 @@ public class LocationRepositoryTests {
 
     @Test
     public void add_newLocation_shouldAdd() {
-        var location = new Location("slug", "");
+        var location = new Location(null, "slug", "", Collections.emptyList());
 
         repository.add(location);
 
@@ -82,8 +84,8 @@ public class LocationRepositoryTests {
 
     @Test
     public void update_existingLocation_shouldUpdate() {
-        var location = new Location("slug", "");
-        var updatedLocation = new Location(location.getSlug(), "updated");
+        var location = new Location(null, "slug", "", Collections.emptyList());
+        var updatedLocation = new Location(null, location.getSlug(), "updated", Collections.emptyList());
         repository.add(location);
 
         repository.update(updatedLocation);
@@ -94,7 +96,7 @@ public class LocationRepositoryTests {
 
     @Test
     public void update_nonExistingLocation_shouldReturnNull() {
-        assertNull(repository.update(new Location("slug", "")));
+        assertNull(repository.update(new Location(null, "slug", "", Collections.emptyList())));
     }
 
     @Test
@@ -104,7 +106,7 @@ public class LocationRepositoryTests {
 
     @Test
     public void delete_existingLocation_shouldRemove() {
-        var location = new Location("slug", "");
+        var location = new Location(null, "slug", "", Collections.emptyList());
         repository.add(location);
 
         var result = repository.delete(location.getSlug());

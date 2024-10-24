@@ -3,7 +3,7 @@ package org.example.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.executiontimeloggerstarter.LogExecutionTime;
 import org.example.model.Category;
-import org.example.service.CategoryService;
+import org.example.service.hashMapService.HashMapCategoryService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,31 +21,31 @@ import java.util.List;
 @RequestMapping("api/v1/places/categories")
 public class CategoryController {
 
-    private final CategoryService categoryService;
+    private final HashMapCategoryService hashMapCategoryService;
 
     @GetMapping
     public List<Category> getCategories() {
-        return categoryService.getAllCategories();
+        return hashMapCategoryService.getAllCategories();
     }
 
     @GetMapping("/{id}")
     public Category getCategory(@PathVariable Integer id) {
-        return categoryService.getCategory(id);
+        return hashMapCategoryService.getCategory(id);
     }
 
     @PostMapping
     public void addCategory(@RequestBody Category category) {
-        categoryService.addCategory(category);
+        hashMapCategoryService.addCategory(category);
     }
 
     @PutMapping("/{id}")
     public void updateCategory(@RequestBody Category category) {
-        categoryService.updateCategory(category);
+        hashMapCategoryService.updateCategory(category);
     }
 
     @DeleteMapping("/{id}")
     public void deleteCategory(@PathVariable Integer id) {
-        categoryService.deleteCategory(id);
+        hashMapCategoryService.deleteCategory(id);
     }
 }
 

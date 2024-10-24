@@ -1,6 +1,7 @@
 package org.example.repository;
 
 import org.example.model.Category;
+import org.example.repository.hashMapRepository.HashMapCategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,13 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CategoryRepositoryTests {
+public class HashMapCategoryRepositoryTests {
 
-    private CategoryRepository repository;
+    private HashMapCategoryRepository repository;
 
     @BeforeEach
     void setUp() {
-        repository = new CategoryRepository();
+        repository = new HashMapCategoryRepository();
     }
 
     @Test

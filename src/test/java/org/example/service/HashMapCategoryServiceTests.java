@@ -1,7 +1,8 @@
 package org.example.service;
 
 import org.example.model.Category;
-import org.example.repository.CategoryRepository;
+import org.example.repository.hashMapRepository.HashMapCategoryRepository;
+import org.example.service.hashMapService.HashMapCategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -15,15 +16,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class CategoryServiceTests {
+public class HashMapCategoryServiceTests {
 
-    private CategoryService service;
-    private CategoryRepository repositoryMock;
+    private HashMapCategoryService service;
+    private HashMapCategoryRepository repositoryMock;
 
     @BeforeEach
     void setUp() {
-        repositoryMock = mock(CategoryRepository.class);
-        service = new CategoryService(repositoryMock);
+        repositoryMock = mock(HashMapCategoryRepository.class);
+        service = new HashMapCategoryService(repositoryMock);
     }
 
     @Test

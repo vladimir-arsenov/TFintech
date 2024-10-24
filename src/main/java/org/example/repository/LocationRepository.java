@@ -1,45 +1,14 @@
 package org.example.repository;
 
 import org.example.model.Location;
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 
-@Component
-public class LocationRepository implements ConcurrentHashMapRepository<String, Location> {
+@Repository
+public interface LocationRepository extends JpaRepository<Location, Long> {
+    Optional<Location> findBySlug(String slug);
 
-    private final ConcurrentHashMap<String, Location> storage;
-
-    public LocationRepository() {
-        storage = new ConcurrentHashMap<>();
-    }
-
-    @Override
-    public Location get(String id) {
-        return storage.get(id);
-    }
-
-    @Override
-    public void add(Location e) {
-        storage.put(e.getSlug(), e);
-    }
-
-    @Override
-    public List<Location> getAll() {
-        return storage.values().stream().toList();
-    }
-
-    @Override
-    public Location update(Location e) {
-        if (!storage.containsKey(e.getSlug()))
-            return null;
-
-        return storage.put(e.getSlug(), e);
-    }
-
-    @Override
-    public Location delete(String id) {
-        return storage.remove(id);
-    }
+    Location deleteBySlug(String slug);
 }

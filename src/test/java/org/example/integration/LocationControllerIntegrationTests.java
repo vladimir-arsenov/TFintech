@@ -18,6 +18,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.wiremock.integrations.testcontainers.WireMockContainer;
 
+import java.util.Collections;
 import java.util.NoSuchElementException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -58,8 +59,8 @@ public class LocationControllerIntegrationTests {
     @BeforeEach
     public void setUp() throws JsonProcessingException {
 
-        Location[] locations = { new Location("msk", " "), new Location("2", " "),
-                new Location("3", " "), new Location("4", " ")};
+        Location[] locations = { new Location(null, "msk", " ", Collections.emptyList()), new Location(null, "2", " ", Collections.emptyList()),
+                new Location(null, "3", " ", Collections.emptyList()), new Location(null, "4", " ", Collections.emptyList())};
         String json = objectMapper.writeValueAsString(locations);
         stubFor(
                 WireMock.get(urlEqualTo("/public-api/v1.4/locations"))
@@ -88,7 +89,7 @@ public class LocationControllerIntegrationTests {
 
     @Test
     public void shouldAddLocation() {
-        var newLocation = new Location("new", " ");
+        var newLocation = new Location(null, "new", " ", Collections.emptyList());
         locationController.addLocation(newLocation);
 
         var result = locationController.getLocation("new");
@@ -98,7 +99,7 @@ public class LocationControllerIntegrationTests {
 
     @Test
     public void shouldUpdateLocation() {
-        locationController.updateLocation(new Location("msk", "updated"));
+        locationController.updateLocation(new Location(null, "msk", "updated",Collections.emptyList()));
 
         var result = locationController.getLocation("msk");
 
