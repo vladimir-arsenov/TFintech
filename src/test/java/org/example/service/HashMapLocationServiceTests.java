@@ -1,11 +1,13 @@
 package org.example.service;
 
 import org.example.model.Location;
-import org.example.repository.LocationRepository;
+import org.example.repository.hashMapRepository.HashMapLocationRepository;
+import org.example.service.hashMapService.HashMapLocationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -15,20 +17,20 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class LocationServiceTests {
+public class HashMapLocationServiceTests {
 
-    private LocationService service;
-    private LocationRepository repositoryMock;
+    private HashMapLocationService service;
+    private HashMapLocationRepository repositoryMock;
 
     @BeforeEach
     void setUp() {
-        repositoryMock = mock(LocationRepository.class);
-        service = new LocationService(repositoryMock);
+        repositoryMock = mock(HashMapLocationRepository.class);
+        service = new HashMapLocationService(repositoryMock);
     }
 
     @Test
     public void getLocation_validId_shouldReturnLocation() {
-        var category = new Location("", "");
+        var category = new Location(null, "", "", Collections.emptyList());
         when(repositoryMock.get(category.getSlug())).thenReturn(category);
 
         var result = service.getLocation(category.getSlug());
@@ -48,7 +50,7 @@ public class LocationServiceTests {
 
     @Test
     public void getAllCategories_shouldReturnCategories() {
-        var list = List.of(new Location("", ""), new Location("", ""));
+        var list = List.of(new Location(null, "", "", Collections.emptyList()), new Location(null, "", "", Collections.emptyList()));
         when(repositoryMock.getAll()).thenReturn(list);
 
         var result = service.getAllLocations();
@@ -58,7 +60,7 @@ public class LocationServiceTests {
 
     @Test
     public void addLocation_shouldSave() {
-        var category = new Location("", "");
+        var category = new Location(null, "", "", Collections.emptyList());
 
         service.addLocation(category);
 
@@ -69,7 +71,7 @@ public class LocationServiceTests {
 
     @Test
     public void updateLocation_categoryExists_shouldUpdate() {
-        var category = new Location("", "");
+        var category = new Location(null, "", "", Collections.emptyList());
         when(repositoryMock.update(category)).thenReturn(category);
 
         service.updateLocation(category);
@@ -81,7 +83,7 @@ public class LocationServiceTests {
 
     @Test
     public void updateLocation_categoryDoesNotExist_shouldThrowNoSuchElementException() {
-        var category = new Location("", "");
+        var category = new Location(null, "", "", Collections.emptyList());
         when(repositoryMock.update(category)).thenReturn(null);
 
         var result = assertThrows(NoSuchElementException.class, () -> service.updateLocation(category));
@@ -93,7 +95,7 @@ public class LocationServiceTests {
     @Test
     public void deleteLocation_validId_shouldDelete() {
         var locationSlug = "slug";
-        when(repositoryMock.delete(locationSlug)).thenReturn(new Location(locationSlug, ""));
+        when(repositoryMock.delete(locationSlug)).thenReturn(new Location(null, locationSlug, "", Collections.emptyList()));
 
         service.deleteLocation(locationSlug);
 

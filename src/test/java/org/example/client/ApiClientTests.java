@@ -17,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import java.util.Collections;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -51,8 +53,8 @@ public class ApiClientTests {
 
     @Test
     public void getLocations_shouldReturnLocations() throws JsonProcessingException {
-        Location[] locations = { new Location("1", " "), new Location("2", " "),
-                new Location("3", " "), new Location("4", " ")};
+        Location[] locations = { new Location(null, "1", " ", Collections.emptyList()), new Location(null, "2", " ",Collections.emptyList()),
+                new Location(null, "3", " ",Collections.emptyList()), new Location(null, "4", " ",Collections.emptyList()) };
         String json = objectMapper.writeValueAsString(locations);
 
         stubFor(

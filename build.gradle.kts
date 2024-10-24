@@ -39,6 +39,9 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter:1.20.2")
     implementation("org.wiremock.integrations.testcontainers:wiremock-testcontainers-module:1.0-alpha-14")
 
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.liquibase:liquibase-core")
+    runtimeOnly("org.postgresql:postgresql")
 }
 
 tasks.test {

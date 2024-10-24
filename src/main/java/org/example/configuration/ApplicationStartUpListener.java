@@ -6,7 +6,7 @@ import org.example.client.ApiClient;
 import org.example.executiontimeloggerstarter.LogExecutionTime;
 import org.example.model.Category;
 import org.example.model.Location;
-import org.example.repository.ConcurrentHashMapRepository;
+import org.example.repository.hashMapRepository.ConcurrentHashMapRepository;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
