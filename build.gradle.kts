@@ -28,6 +28,8 @@ dependencies {
     implementation(project(":execution-time-logger-starter"))
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -35,11 +37,12 @@ dependencies {
     testImplementation("org.wiremock:wiremock-standalone:3.0.1")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.0")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.18.0")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.18.0")
     testImplementation("org.testcontainers:testcontainers:1.20.2")
     testImplementation("org.testcontainers:junit-jupiter:1.20.2")
     implementation("org.wiremock.integrations.testcontainers:wiremock-testcontainers-module:1.0-alpha-14")
-
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    testImplementation("org.testcontainers:postgresql")
     implementation("org.liquibase:liquibase-core")
     runtimeOnly("org.postgresql:postgresql")
 }

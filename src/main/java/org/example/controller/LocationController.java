@@ -1,9 +1,11 @@
 package org.example.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.executiontimeloggerstarter.LogExecutionTime;
-import org.example.model.Location;
-import org.example.service.hashMapService.HashMapLocationService;
+import org.example.dto.LocationDto;
+import org.example.mapper.LocationMapper;
+import org.example.service.LocationService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,36 +17,37 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@LogExecutionTime
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/locations")
+@Validated
 public class LocationController {
 
-    private final HashMapLocationService hashMapLocationService;
+    private final LocationService locationService;
+    private final LocationMapper locationMapper;
 
-    @GetMapping
-    public List<Location> getLocations() {
-        return hashMapLocationService.getAllLocations();
+    @GetMapping("")
+    public List<LocationDto> getLocations() {
+        return locationService.getAll().stream().map(locationMapper::toDto).toList();
     }
 
-    @GetMapping("/{slug}")
-    public Location getLocation(@PathVariable String slug) {
-        return hashMapLocationService.getLocation(slug);
+    @GetMapping("/{id}")
+    public LocationDto getLocation(@PathVariable Long id) {
+        return locationMapper.toDto(locationService.get(id));
     }
 
     @PostMapping
-    public void addLocation(@RequestBody Location location) {
-        hashMapLocationService.addLocation(location);
+    public void addLocation(@Valid @RequestBody LocationDto location) {
+        locationService.add(locationMapper.toModel(location));
     }
 
-    @PutMapping("/{slug}")
-    public void updateLocation(@RequestBody Location location) {
-        hashMapLocationService.updateLocation(location);
+    @PutMapping("/{id}")
+    public void updateLocation(@PathVariable Long id, @Valid @RequestBody LocationDto location) {
+        locationService.update(id, locationMapper.toModel(location));
     }
 
-    @DeleteMapping("/{slug}")
-    public void deleteLocation(@PathVariable String slug) {
-        hashMapLocationService.deleteLocation(slug);
+    @DeleteMapping("/{id}")
+    public void deleteLocation(@PathVariable Long id) {
+        locationService.delete(id);
     }
 }

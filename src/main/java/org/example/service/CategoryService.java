@@ -1,8 +1,8 @@
-package org.example.service.hashMapService;
+package org.example.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.model.Category;
-import org.example.repository.hashMapRepository.ConcurrentHashMapRepository;
+import org.example.repository.ConcurrentHashMapRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class HashMapCategoryService {
+public class CategoryService {
 
     private final ConcurrentHashMapRepository<Integer, Category> repository;
 

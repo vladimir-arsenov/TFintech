@@ -1,4 +1,4 @@
-package org.example.repository.hashMapRepository;
+package org.example.repository;
 
 import org.example.model.Category;
 import org.springframework.stereotype.Component;
@@ -8,11 +8,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 @Component
-public class HashMapCategoryRepository implements ConcurrentHashMapRepository<Integer, Category> {
+public class CategoryRepository implements ConcurrentHashMapRepository<Integer, Category> {
 
     private final ConcurrentHashMap<Integer, Category> storage;
 
-    public HashMapCategoryRepository() {
+    public CategoryRepository() {
         storage = new ConcurrentHashMap<>();
     }
 
