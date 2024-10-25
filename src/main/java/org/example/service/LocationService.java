@@ -1,41 +1,42 @@
 package org.example.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.example.model.Location;
-import org.example.repository.ConcurrentHashMapRepository;
+import org.example.repository.LocationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class LocationService {
 
-    private final ConcurrentHashMapRepository<String, Location> repository;
+    private final LocationRepository locationRepository;
 
-    public Location getLocation(String slug) {
-        return Optional.ofNullable(repository.get(slug))
-                .orElseThrow(() -> new NoSuchElementException("Location with id %s not found".formatted(slug)));
+    public List<Location> getAll() {
+        return locationRepository.findAll();
     }
 
-    public void addLocation(Location location) {
-        repository.add(location);
+    public Location get(Long id) {
+        return locationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Location with id " + id + " not found"));
     }
 
-    public List<Location> getAllLocations() {
-        return repository.getAll();
+    public void add(Location location) {
+        locationRepository.save(location);
     }
 
-    public void updateLocation(Location newLocation) {
-        Optional.ofNullable(repository.update(newLocation))
-                .orElseThrow(() -> new NoSuchElementException("Location with id %s not found".formatted(newLocation.getSlug())));
+    public void update(Long id, Location location) {
+        var l = get(id);
+        l.setName(location.getName());
+        l.setSlug(location.getSlug());
+        l.setEvents(location.getEvents());
+
+        locationRepository.save(l);
     }
 
-    public void deleteLocation(String slug) {
-        Optional.ofNullable(repository.delete(slug))
-                .orElseThrow(() -> new NoSuchElementException("Location with id %s not found".formatted(slug)));
-
+    public void delete(Long id) {
+        locationRepository.delete(get(id));
     }
 }

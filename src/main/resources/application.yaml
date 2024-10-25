@@ -1,3 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tfintech
+    username: tfintech
+    password: pass
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:/db/changelog/changelog.xml
 api:
   url:
     categories: https://kudago.com/public-api/v1.4/place-categories

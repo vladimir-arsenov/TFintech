@@ -1,45 +1,18 @@
 package org.example.repository;
 
 import org.example.model.Location;
-import org.springframework.stereotype.Component;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 
-@Component
-public class LocationRepository implements ConcurrentHashMapRepository<String, Location> {
+@Repository
+public interface LocationRepository extends JpaRepository<Location, Long> {
 
-    private final ConcurrentHashMap<String, Location> storage;
+    @Query("SELECT l FROM Location l LEFT JOIN FETCH l.events WHERE l.id = :id")
+    Optional<Location> findById(@Param("id") @NotNull Long id);
 
-    public LocationRepository() {
-        storage = new ConcurrentHashMap<>();
-    }
-
-    @Override
-    public Location get(String id) {
-        return storage.get(id);
-    }
-
-    @Override
-    public void add(Location e) {
-        storage.put(e.getSlug(), e);
-    }
-
-    @Override
-    public List<Location> getAll() {
-        return storage.values().stream().toList();
-    }
-
-    @Override
-    public Location update(Location e) {
-        if (!storage.containsKey(e.getSlug()))
-            return null;
-
-        return storage.put(e.getSlug(), e);
-    }
-
-    @Override
-    public Location delete(String id) {
-        return storage.remove(id);
-    }
 }

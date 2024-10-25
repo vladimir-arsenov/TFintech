@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.client.ApiClient;
 import org.example.executiontimeloggerstarter.LogExecutionTime;
 import org.example.model.Category;
-import org.example.model.Location;
 import org.example.repository.ConcurrentHashMapRepository;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -18,7 +17,6 @@ import java.util.Arrays;
 @Component
 public class ApplicationStartUpListener {
     private final ConcurrentHashMapRepository<Integer, Category> categoryRepository;
-    private final ConcurrentHashMapRepository<String, Location> locationsRepository;
     private final ApiClient apiClient;
 
     @LogExecutionTime
@@ -30,11 +28,5 @@ public class ApplicationStartUpListener {
                 .forEach(categoryRepository::add);
 
         log.info("Category repository initialized");
-        log.info("Initializing location repository...");
-
-        Arrays.stream(apiClient.getLocations())
-                .forEach(locationsRepository::add);
-
-        log.info("Location repository initialized");
     }
 }
