@@ -69,18 +69,28 @@ public class CategoryControllerIntegrationTests {
                                         .withBody(json)
                         )
         );
+        stubFor(
+                WireMock.get(urlEqualTo("/public-api/v1.4/locations"))
+                        .willReturn(
+                                aResponse()
+                                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                                        .withBody(json)
+                        )
+        );
         applicationStartUpListener.initRepositories();
     }
 
     @Test
-    public void shouldReturnCategories() throws JsonProcessingException {
+    public void shouldReturnCategories() throws InterruptedException {
+        Thread.sleep(100);
         var result = categoryController.getCategories();
 
         assertFalse(result.isEmpty());
     }
 
     @Test
-    public void shouldGetCategory(){
+    public void shouldGetCategory() throws InterruptedException {
+        Thread.sleep(100);
         var category = categoryController.getCategory(1);
 
         assertEquals(1, category.getId());
@@ -106,7 +116,8 @@ public class CategoryControllerIntegrationTests {
     }
 
     @Test
-    public void shouldDeleteCategory() {
+    public void shouldDeleteCategory() throws InterruptedException {
+        Thread.sleep(100);
         categoryController.deleteCategory(5);
 
         assertThrows(NoSuchElementException.class, () -> categoryController.getCategory(5));

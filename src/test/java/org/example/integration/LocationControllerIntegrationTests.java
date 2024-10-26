@@ -56,7 +56,7 @@ public class LocationControllerIntegrationTests {
     }
 
     @BeforeEach
-    public void setUp() throws JsonProcessingException {
+    public void setUp() throws JsonProcessingException{
 
         Location[] locations = { new Location("msk", " "), new Location("2", " "),
                 new Location("3", " "), new Location("4", " ")};
@@ -69,18 +69,28 @@ public class LocationControllerIntegrationTests {
                                         .withBody(json)
                         )
         );
+        stubFor(
+                WireMock.get(urlEqualTo("/public-api/v1.4/place-categories"))
+                        .willReturn(
+                                aResponse()
+                                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                                        .withBody("")
+                        )
+        );
         applicationStartUpListener.initRepositories();
     }
 
     @Test
-    public void shouldReturnLocations() throws JsonProcessingException {
+    public void shouldReturnLocations() throws InterruptedException {
+        Thread.sleep(100);
         var result = locationController.getLocations();
 
         assertFalse(result.isEmpty());
     }
 
     @Test
-    public void shouldGetLocation(){
+    public void shouldGetLocation() throws InterruptedException {
+        Thread.sleep(100);
         var location = locationController.getLocation("msk");
 
         assertEquals("msk", location.getSlug());
@@ -106,7 +116,8 @@ public class LocationControllerIntegrationTests {
     }
 
     @Test
-    public void shouldDeleteLocation() {
+    public void shouldThrow() throws InterruptedException {
+        Thread.sleep(100);
         locationController.deleteLocation("msk");
 
         assertThrows(NoSuchElementException.class, () -> locationController.getLocation("msk"));

@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -29,7 +30,10 @@ public class EventService {
                 (events, convertedBudget) -> Arrays.stream(events)
                         .filter(event -> event.getPrice().compareTo(convertedBudget) <= 0)
                         .toList()
-        );
+        ).onErrorResume(ex -> {
+            log.error("Error while getting events: {}", ex.getMessage());
+            return Mono.just(Collections.emptyList());
+        });
     }
 
     @Async
