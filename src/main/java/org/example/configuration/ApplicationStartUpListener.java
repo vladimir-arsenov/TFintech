@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -54,22 +53,20 @@ public class ApplicationStartUpListener {
 
     private void initialize() {
 
-        Callable<Void> categoryInitTask = () -> {
+        Runnable categoryInitTask = () -> {
             log.info("Initializing category repository...");
             Arrays.stream(apiClient.getCategories()).forEach(categoryRepository::add);
             log.info("Category repository initialized");
-            return null;
         };
 
-        Callable<Void> locationInitTask = () -> {
+        Runnable locationInitTask = () -> {
             log.info("Initializing location repository...");
             Arrays.stream(apiClient.getLocations()).forEach(locationsRepository::add);
             log.info("Location repository initialized");
-            return null;
         };
 
         try {
-            var futures = fixedExecutor.invokeAll(List.of(categoryInitTask, locationInitTask));
+            var futures = List.of(fixedExecutor.submit(categoryInitTask), fixedExecutor.submit(locationInitTask));
             for(var future : futures) {
                 future.get();
             }

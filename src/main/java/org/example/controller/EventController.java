@@ -1,5 +1,8 @@
 package org.example.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.model.Event;
 import org.example.service.EventService;
@@ -13,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+@Tag(name = "Events", description = "Controller for working with events")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/events")
@@ -20,13 +24,14 @@ public class EventController {
 
     private final EventService eventService;
 
+    @Operation(summary = "Get a list of events", description = "Retrieve events based on provided parameters")
     @GetMapping
     public List<Event> getEvents(
-            @RequestParam BigDecimal budget, @RequestParam String currency,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo
+            @Parameter(description = "Budget amount", example = "47.50") @RequestParam BigDecimal budget,
+            @Parameter(description = "Currency coe", example = "USD") @RequestParam String currency,
+            @Parameter(description = "Start date", example = "2023-01-01") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+            @Parameter(description = "End date", example = "2024-01-01")@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo
     ) {
-//        return eventService.getEventsCompletableFuture(budget, currency, dateFrom, dateTo).join();
         return eventService.getEvents(budget, currency, dateFrom, dateTo).block();
     }
 }
