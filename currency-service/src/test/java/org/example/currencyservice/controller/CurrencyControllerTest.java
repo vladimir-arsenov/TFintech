@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.client.RestClientException;
 
+import java.math.BigDecimal;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -37,7 +39,7 @@ class CurrencyControllerTest {
 
     @Test
     void getRate_validCurrencyCode_shouldReturnOkResponseWithCurrencyRate() throws Exception {
-        when(currencyService.getRate(anyString())).thenReturn(new CurrencyRate("USD", 73.5f));
+        when(currencyService.getRate(anyString())).thenReturn(new CurrencyRate("USD", new BigDecimal("73.5")));
 
         mockMvc.perform(get("/currencies/rates/USD"))
                 .andExpect(status().isOk())
@@ -47,7 +49,7 @@ class CurrencyControllerTest {
 
     @Test
     void convertCurrency_validRequest_shouldReturnOkResponseWithConvertedCurrency() throws Exception {
-        CurrencyConversionResponse response = new CurrencyConversionResponse("USD", "EUR", 85.0f);
+        CurrencyConversionResponse response = new CurrencyConversionResponse("USD", "EUR", new BigDecimal("85.0"));
         when(currencyService.convertCurrency(any(CurrencyConversionRequest.class))).thenReturn(response);
         String requestBody = """
             {

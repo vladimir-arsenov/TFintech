@@ -6,6 +6,7 @@ import org.example.currencyservice.dto.CurrencyConversionRequest;
 import org.example.currencyservice.dto.CurrencyRate;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,16 +17,16 @@ public class CurrencyServiceTest {
 
     @Test
     public void convertCurrency_shouldConvertProperly() {
-        var rates = Map.of("USD", new CurrencyRate("USD", 90.0f),
-                "RUB", new CurrencyRate("RUB", 1f),
-                "EUR", new CurrencyRate("EUR", 100.0f));
-        var conversionRequest1 = new CurrencyConversionRequest( "USD", "RUB", 10f);
-        var conversionRequest2 = new CurrencyConversionRequest( "USD", "EUR", 10f);
+        var rates = Map.of("USD", new CurrencyRate("USD", new BigDecimal("90")),
+                "RUB", new CurrencyRate("RUB", new BigDecimal("1")),
+                "EUR", new CurrencyRate("EUR", new BigDecimal("100")));
+        var conversionRequest1 = new CurrencyConversionRequest( "USD", "RUB", new BigDecimal("10"));
+        var conversionRequest2 = new CurrencyConversionRequest( "USD", "EUR", new BigDecimal("10"));
         var clientMock = mock(CentralBankClient.class);
         when(clientMock.getCurrencyRates()).thenReturn(rates);
         var service = new CurrencyService(clientMock);
 
-        assertEquals(service.convertCurrency(conversionRequest1).getConvertedAmount(), 900f);
-        assertEquals(service.convertCurrency(conversionRequest2).getConvertedAmount(), 9f);
+        assertEquals(service.convertCurrency(conversionRequest1).getConvertedAmount(), new BigDecimal("900"));
+        assertEquals(service.convertCurrency(conversionRequest2).getConvertedAmount(),  new BigDecimal("9"));
     }
 }

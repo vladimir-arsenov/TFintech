@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "org.example"
-version = "0.0.1-SNAPSHOT"
+version = "1.0-SNAPSHOT"
 
 java {
     toolchain {
@@ -41,6 +41,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
 }
+
 
 tasks.test {
     useJUnitPlatform()

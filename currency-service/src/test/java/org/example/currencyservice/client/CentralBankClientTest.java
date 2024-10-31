@@ -3,7 +3,6 @@ package org.example.currencyservice.client;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -33,9 +32,6 @@ class CentralBankClientTest {
     @Autowired
     private CentralBankClient centralBankClient;
 
-    @Autowired
-    private CachingConfig cachingConfig;
-
     @BeforeAll
     public static void setUp() {
         configureFor(wireMockExtension.getPort());
@@ -49,11 +45,6 @@ class CentralBankClientTest {
     @DynamicPropertySource
     public static void setUpMockBaseUrl(DynamicPropertyRegistry registry) {
         registry.add("api.external.currenciesRate", () -> wireMockExtension.baseUrl() +"/scripts/XML_daily.asp");
-    }
-
-    @AfterEach
-    void tearDown() {
-        cachingConfig.evictCache();
     }
 
     @Test
