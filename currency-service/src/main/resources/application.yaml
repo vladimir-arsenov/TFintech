@@ -1,2 +1,24 @@
-spring.application.name=currency-service
+spring.application.name: currency-service
+spring:
+  cache:
+    cache-names: currenciesRates
+    caffeine:
+      spec: expireAfterWrite=1h
 
+api:
+  external:
+    currenciesRate: "http://www.cbr.ru/scripts/XML_daily.asp"
+
+springdoc:
+  swagger-ui:
+    path: "/swagger-ui.html"
+
+resilience4j.circuitbreaker:
+  instances:
+    centralBankClient:
+      minimumNumberOfCalls: 10
+      waitDurationInOpenState: 10s
+      failureRateThreshold: 50
+      permittedNumberOfCallsInHalfOpenState: 3
+      slidingWindowSize: 100
+      sliding-window-type: time_based
