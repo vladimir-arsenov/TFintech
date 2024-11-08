@@ -13,4 +13,12 @@
         <sqlFile path="db/changelog/create_events_table.sql" />
     </changeSet>
 
+    <changeSet id="3" author="tfintech">
+        <sqlFile path="db/changelog/create_users_table.sql" />
+    </changeSet>
+
+    <changeSet id="4" author="tfintech">
+        <sqlFile path="db/changelog/create_tokens_table.sql" />
+    </changeSet>
+
 </databaseChangeLog>
