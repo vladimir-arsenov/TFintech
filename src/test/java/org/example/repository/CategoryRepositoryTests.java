@@ -22,7 +22,7 @@ public class CategoryRepositoryTests {
     @Test
     public void get_validId_shouldReturnCategory() {
         var category = new Category(1, "", "");
-        repository.add(category);
+        repository.save(category);
 
         var result = repository.get(category.getId());
 
@@ -32,7 +32,7 @@ public class CategoryRepositoryTests {
     @Test
     public void get_invalidId_shouldReturnNull() {
         var category = new Category(1, "", "");
-        repository.add(category);
+        repository.save(category);
 
         var result = repository.get(category.getId() + 1);
 
@@ -48,7 +48,7 @@ public class CategoryRepositoryTests {
     public void getAll_shouldReturnAllCategories() {
         var categories = List.of(new Category(1, "", ""),
                 new Category(2, "", ""), new Category(3, "", ""));
-        categories.forEach(repository::add);
+        categories.forEach(repository::save);
 
         var result = repository.getAll();
 
@@ -56,35 +56,35 @@ public class CategoryRepositoryTests {
     }
 
     @Test
-    public void add_existingCategory_shouldReplaceCategory() {
+    public void save_existingCategory_shouldReplaceCategory() {
         var category = new Category(1, "", "");
         var newCategory = new Category(category.getId(), "", "new");
-        repository.add(category);
+        repository.save(category);
 
-        repository.add(newCategory);
+        repository.save(newCategory);
 
         assertEquals(newCategory, repository.get(category.getId()));
     }
 
     @Test
-    public void add_newCategory_shouldAdd() {
+    public void add_newCategory_shouldSave() {
         var category = new Category(1, "", "");
 
-        repository.add(category);
+        repository.save(category);
 
         assertEquals(category, repository.get(category.getId()));
     }
 
     @Test
-    public void add_nullCategory_shouldThrowNullPointerException() {
-        assertThrows(NullPointerException.class, () -> repository.add(null));
+    public void save_nullCategory_shouldThrowNullPointerException() {
+        assertThrows(NullPointerException.class, () -> repository.save(null));
     }
 
     @Test
     public void update_existingCategory_shouldUpdate() {
         var category = new Category(1, "", "");
         var updatedCategory = new Category(category.getId(), "", "updated");
-        repository.add(category);
+        repository.save(category);
 
         repository.update(updatedCategory);
         var result = repository.get(category.getId());
@@ -105,7 +105,7 @@ public class CategoryRepositoryTests {
     @Test
     public void delete_existingCategory_shouldRemove() {
         var category = new Category(1, "", "");
-        repository.add(category);
+        repository.save(category);
 
         var result = repository.delete(category.getId());
 

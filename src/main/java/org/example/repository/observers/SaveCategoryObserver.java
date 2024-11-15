@@ -12,6 +12,6 @@ public class SaveCategoryObserver implements Observer<Category> {
 
     @Override
     public void update(Category entity) {
-        repository.add(entity);
+        repository.save(entity);
     }
 }

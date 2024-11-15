@@ -7,7 +7,7 @@ public interface ConcurrentHashMapRepository<Id, E> {
 
     E get(Id id);
 
-    void add(E e);
+    E save(E e);
 
     List<E> getAll();
 

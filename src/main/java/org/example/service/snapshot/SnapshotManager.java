@@ -1,35 +1,29 @@
 package org.example.service.snapshot;
 
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.util.Stack;
 
+@Getter
 @Component
 public class SnapshotManager<T> {
     private final Stack<Pair> history = new Stack<>();
 
     public void saveSnapshot(String command, T snapshot) {
-        history.push(new Pair(command, snapshot));
+        if (history.isEmpty() || !history.peek().getSnapshot().equals(snapshot)) {
+            history.push(new Pair(command, snapshot));
+        }
     }
 
-    public Stack<Pair> getHistory() {
-        return history;
-    }
-
+    @Getter
     public class Pair {
-        String command;
-        T snapshot;
+        private final String command;
+        private final T snapshot;
         Pair(String c, T s) {
             command = c;
             snapshot = s;
         }
 
-        private String getCommand() {
-            return command;
-        }
-
-        private T getSnapshot() {
-            return snapshot;
-        }
     }
 }

@@ -2,6 +2,9 @@ package org.example.service;
 
 import org.example.model.Category;
 import org.example.repository.CategoryRepository;
+import org.example.repository.observers.SaveCategoryObserver;
+import org.example.service.snapshot.CategorySnapshot;
+import org.example.service.snapshot.SnapshotManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -19,11 +22,14 @@ public class CategoryServiceTests {
 
     private CategoryService service;
     private CategoryRepository repositoryMock;
+    private SaveCategoryObserver observerMock;
 
     @BeforeEach
     void setUp() {
         repositoryMock = mock(CategoryRepository.class);
-        service = new CategoryService(repositoryMock);
+        observerMock = mock(SaveCategoryObserver.class);
+        SnapshotManager<CategorySnapshot> snapshotManagerMock = mock(SnapshotManager.class);
+        service = new CategoryService(repositoryMock, observerMock, snapshotManagerMock);
     }
 
     @Test
@@ -63,7 +69,7 @@ public class CategoryServiceTests {
         service.addCategory(category);
 
         ArgumentCaptor<Category> captor = ArgumentCaptor.forClass(Category.class);
-        verify(repositoryMock).add(captor.capture());
+        verify(repositoryMock).save(captor.capture());
         assertEquals(category, captor.getValue());
     }
 
@@ -110,6 +116,17 @@ public class CategoryServiceTests {
         var result = assertThrows(NoSuchElementException.class, () -> service.deleteCategory(categoryId));
 
         assertEquals("Category with id %d not found".formatted(categoryId), result.getMessage());
+    }
+
+    @Test
+    public void update_onServiceAdd_shouldBeCalled() {
+
+        var category  = new Category(1, "", "");
+        service.addCategory(category);
+
+        var captor = ArgumentCaptor.forClass(Category.class);
+        verify(observerMock).update(captor.capture());
+        assertEquals(category, captor.getValue());
     }
 }
 

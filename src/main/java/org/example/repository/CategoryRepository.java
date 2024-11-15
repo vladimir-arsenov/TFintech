@@ -22,8 +22,10 @@ public class CategoryRepository implements ConcurrentHashMapRepository<Integer, 
     }
 
     @Override
-    public void add(Category e) {
+    public Category save(Category e) {
+        Category prev = storage.get(e.getId());
         storage.put(e.getId(), e);
+        return prev;
     }
 
     @Override
