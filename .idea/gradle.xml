@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/custom-linked-list" />
             <option value="$PROJECT_DIR$/event-location-category-service" />
             <option value="$PROJECT_DIR$/execution-time-logger-starter" />
+            <option value="$PROJECT_DIR$/kafka_vs_rabbitmq_performance" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -1,0 +1,21 @@
+Benchmark                                                      (configType)   Mode  Cnt    Score    Error   Units
+KafkaBenchmarkWithConfigurations.test                                simple  thrpt    5    0,756 ±  0,126  ops/ms
+KafkaBenchmarkWithConfigurations.test                        load_balancing  thrpt    5    1,178 ±  0,321  ops/ms
+KafkaBenchmarkWithConfigurations.test                    multiple_consumers  thrpt    5    0,009 ±  0,001  ops/ms
+KafkaBenchmarkWithConfigurations.test     load_balancing_multiple_consumers  thrpt    5    0,009 ±  0,001  ops/ms
+KafkaBenchmarkWithConfigurations.test                           stress_test  thrpt    5    0,009 ±  0,001  ops/ms
+RabbitMQBenchmarkWithConfigurations.test                             simple  thrpt    5    1,493 ±  0,371  ops/ms
+RabbitMQBenchmarkWithConfigurations.test                     load_balancing  thrpt    5    1,084 ±  0,218  ops/ms
+RabbitMQBenchmarkWithConfigurations.test                 multiple_consumers  thrpt    5    1,085 ±  0,197  ops/ms
+RabbitMQBenchmarkWithConfigurations.test  load_balancing_multiple_consumers  thrpt    5    0,961 ±  0,032  ops/ms
+RabbitMQBenchmarkWithConfigurations.test                        stress_test  thrpt    5    0,384 ±  0,036  ops/ms
+KafkaBenchmarkWithConfigurations.test                                simple   avgt    5    1,283 ±  0,253   ms/op
+KafkaBenchmarkWithConfigurations.test                        load_balancing   avgt    5    0,910 ±  0,326   ms/op
+KafkaBenchmarkWithConfigurations.test                    multiple_consumers   avgt    5  111,105 ±  0,844   ms/op
+KafkaBenchmarkWithConfigurations.test     load_balancing_multiple_consumers   avgt    5  111,195 ±  1,510   ms/op
+KafkaBenchmarkWithConfigurations.test                           stress_test   avgt    5  113,017 ±  1,751   ms/op
+RabbitMQBenchmarkWithConfigurations.test                             simple   avgt    5    0,684 ±  0,089   ms/op
+RabbitMQBenchmarkWithConfigurations.test                     load_balancing   avgt    5    0,896 ±  0,130   ms/op
+RabbitMQBenchmarkWithConfigurations.test                 multiple_consumers   avgt    5    0,955 ±  0,096   ms/op
+RabbitMQBenchmarkWithConfigurations.test  load_balancing_multiple_consumers   avgt    5    1,128 ±  0,048   ms/op
+RabbitMQBenchmarkWithConfigurations.test                        stress_test   avgt    5    2,803 ±  0,297   ms/op
