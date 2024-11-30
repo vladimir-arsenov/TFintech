@@ -1,9 +1,12 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.executiontimeloggerstarter.LogExecutionTime;
+import org.example.metrics.LocationEndpointCallCounter;
 import org.example.model.Location;
 import org.example.service.LocationService;
+import org.slf4j.MDC;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
+@Slf4j
 @LogExecutionTime
 @RequiredArgsConstructor
 @RestController
@@ -22,10 +27,17 @@ import java.util.List;
 public class LocationController {
 
     private final LocationService locationService;
+    private final LocationEndpointCallCounter metric;
 
     @GetMapping
     public List<Location> getLocations() {
-        return locationService.getAllLocations();
+        metric.increment();
+        try(var requestId = MDC.putCloseable("requestId", UUID.randomUUID().toString());
+            var requestMethod = MDC.putCloseable("requestMethod", "GET"))
+        {
+            log.info("getLocations() from controller");
+            return locationService.getAllLocations();
+        }
     }
 
     @GetMapping("/{slug}")
@@ -45,6 +57,11 @@ public class LocationController {
 
     @DeleteMapping("/{slug}")
     public void deleteLocation(@PathVariable String slug) {
-        locationService.deleteLocation(slug);
+        try(var requestId = MDC.putCloseable("requestId", UUID.randomUUID().toString());
+            var requestMethod = MDC.putCloseable("requestMethod", "DELETE"))
+        {
+            log.info("deleteLocations() from controller");
+            locationService.deleteLocation(slug);
+        }
     }
 }

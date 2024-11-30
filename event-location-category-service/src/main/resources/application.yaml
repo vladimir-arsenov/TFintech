@@ -11,3 +11,17 @@ executors:
     interval: 1h
   executor:
     threadsCount: 2
+
+logging:
+  file:
+    name: logs/app.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} | %-5level | %logger | %m requestId=%X{requestId} requestMethod=%X{requestMethod}"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
