@@ -1,5 +1,6 @@
 package org.example;
 
+import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -11,8 +12,10 @@ import java.util.concurrent.TimeoutException;
 
 public class RabbitMQConfig {
 
-    public static final String QUEUE_NAME = "test-queue";
+    public static final String QUEUE_NAME = "test-queue-1";
     private static final String HOST = "localhost";
+    public static final String EXCHANGE = "test-exchange";
+    public static final String ROUTING_KEY = "test-key";
 
     public static List<Channel> producers = new ArrayList<>();
     public static List<Channel> consumers = new ArrayList<>();
@@ -32,7 +35,9 @@ public class RabbitMQConfig {
         ensureConnection();
         for (int i = 0; i < n; i++) {
             Channel channel = connection.createChannel();
-            channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+            channel.exchangeDeclare(EXCHANGE, BuiltinExchangeType.DIRECT, false);
+            channel.queueBind(QUEUE_NAME, EXCHANGE, ROUTING_KEY);
+            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
             consumers.add(channel);
         }
     }

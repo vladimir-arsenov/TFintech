@@ -31,12 +31,14 @@ import static org.example.KafkaConfig.producers;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 1)
 @Fork(value = 1)
-@Measurement(time = 1)
+@Measurement(time = 1, iterations = 10)
 @State(Scope.Thread)
 public class KafkaBenchmarkWithConfigurations {
 
     @Param({"simple", "load_balancing", "multiple_consumers", "load_balancing_multiple_consumers", "stress_test"})
     public String configType;
+    private final int messageCount = 100;
+
 
     @Setup(Level.Trial)
     public void setup() {
@@ -70,31 +72,39 @@ public class KafkaBenchmarkWithConfigurations {
         KafkaConfig.setupConsumers(consumerCount);
     }
 
+
     @Benchmark
     public void test(Blackhole blackhole) {
         ExecutorService producerExecutor = Executors.newFixedThreadPool(producers.size());
         ExecutorService consumerExecutor = Executors.newFixedThreadPool(consumers.size());
 
         producers.forEach(producer -> producerExecutor.submit(() -> {
-            producer.send(new ProducerRecord<>(TOPIC, "key", "Message from producer"));
+            for (int i = 0; i < messageCount; i++) {
+                producer.send(new ProducerRecord<>(TOPIC, "key", "Message " + i));
+            }
         }));
 
         consumers.forEach(consumer -> consumerExecutor.submit(() -> {
-            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
-            for (ConsumerRecord<String, String> record : records) {
-                blackhole.consume(record);
+            int processedMessages = 0;
+            while (processedMessages < messageCount) {
+                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+                processedMessages += records.count();
+                for (ConsumerRecord<String, String> record : records) {
+                    blackhole.consume(record);
+                }
             }
         }));
 
         producerExecutor.shutdown();
         consumerExecutor.shutdown();
         try {
-            producerExecutor.awaitTermination(1, TimeUnit.SECONDS);
-            consumerExecutor.awaitTermination(1, TimeUnit.SECONDS);
+            producerExecutor.awaitTermination(5, TimeUnit.SECONDS);
+            consumerExecutor.awaitTermination(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
+
 
     @TearDown(Level.Trial)
     public void teardown() {

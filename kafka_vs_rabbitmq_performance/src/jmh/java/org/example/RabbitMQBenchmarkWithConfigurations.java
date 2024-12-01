@@ -30,13 +30,15 @@ import static org.example.RabbitMQConfig.producers;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Warmup(iterations = 1)
 @Fork(value = 1)
-@Measurement(time = 1)
+@Measurement(time = 1, iterations = 10)
 @State(Scope.Thread)
 public class RabbitMQBenchmarkWithConfigurations {
 
     private static final byte[] MESSAGE = "Message from producer".getBytes();
     @Param({"simple", "load_balancing", "multiple_consumers", "load_balancing_multiple_consumers", "stress_test"})
     public String configType;
+    private final int messageCount = 100;
+
 
     @Setup(Level.Trial)
     public void setup() throws IOException, TimeoutException {
@@ -76,33 +78,40 @@ public class RabbitMQBenchmarkWithConfigurations {
         ExecutorService consumerExecutor = Executors.newFixedThreadPool(consumers.size());
 
         producers.forEach(producer -> producerExecutor.submit(() -> {
-            try {
-                producer.basicPublish("", QUEUE_NAME, null, MESSAGE);
-            } catch (IOException e) {
-                e.printStackTrace();
+            for (int i = 0; i < messageCount; i++) {
+                try {
+                    producer.basicPublish("", QUEUE_NAME, null, ("Message " + i).getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }));
 
         consumers.forEach(consumer -> consumerExecutor.submit(() -> {
-            try {
-                GetResponse response = consumer.basicGet(QUEUE_NAME, true);
-                if (response != null) {
-                    blackhole.consume(new String(response.getBody()));
+            int processedMessages = 0;
+            while (processedMessages < messageCount) {
+                try {
+                    GetResponse response = consumer.basicGet(QUEUE_NAME, true);
+                    if (response != null) {
+                        blackhole.consume(new String(response.getBody()));
+                        processedMessages++;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }));
 
         producerExecutor.shutdown();
         consumerExecutor.shutdown();
         try {
-            producerExecutor.awaitTermination(1, TimeUnit.SECONDS);
-            consumerExecutor.awaitTermination(1, TimeUnit.SECONDS);
+            producerExecutor.awaitTermination(5, TimeUnit.SECONDS);
+            consumerExecutor.awaitTermination(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
     }
+
 
     @TearDown(Level.Trial)
     public void teardown() throws IOException, TimeoutException {
