@@ -1,6 +1,7 @@
 package org.example.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.model.Location;
 import org.example.repository.ConcurrentHashMapRepository;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class LocationService {
@@ -25,6 +27,7 @@ public class LocationService {
     }
 
     public List<Location> getAllLocations() {
+        log.info("getLocations() from service");
         return repository.getAll();
     }
 
@@ -34,6 +37,7 @@ public class LocationService {
     }
 
     public void deleteLocation(String slug) {
+        log.info("deleteLocation() from service");
         Optional.ofNullable(repository.delete(slug))
                 .orElseThrow(() -> new NoSuchElementException("Location with id %s not found".formatted(slug)));
 
