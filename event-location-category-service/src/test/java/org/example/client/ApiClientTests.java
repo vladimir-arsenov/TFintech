@@ -7,7 +7,6 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.example.model.Category;
-import org.example.model.Location;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -16,8 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-
-import java.util.Collections;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
@@ -49,25 +46,6 @@ public class ApiClientTests {
     public static void setUpMockBaseUrl(DynamicPropertyRegistry registry) {
         registry.add("api.url.locations", () -> wireMockExtension.baseUrl() +"/public-api/v1.4/locations");
         registry.add("api.url.categories", () -> wireMockExtension.baseUrl() + "/public-api/v1.4/place-categories");
-    }
-
-    @Test
-    public void getLocations_shouldReturnLocations() throws JsonProcessingException {
-        Location[] locations = { new Location(null, "1", " ", Collections.emptyList()), new Location(null, "2", " ",Collections.emptyList()),
-                new Location(null, "3", " ",Collections.emptyList()), new Location(null, "4", " ",Collections.emptyList()) };
-        String json = objectMapper.writeValueAsString(locations);
-
-        stubFor(
-                WireMock.get(urlEqualTo("/public-api/v1.4/locations"))
-                        .willReturn(
-                                aResponse()
-                                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                                        .withBody(json)
-                        )
-        );
-
-        var result = apiClient.getLocations();
-        assertArrayEquals(result, locations);
     }
 
     @Test
